@@ -1,0 +1,33 @@
+{
+  "name": "wattbox",
+  "version": "1.0.0",
+  "description": "Node Module Written in TypeScript to control the WattBox family of devices",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "prepublish": "npm run build",
+    "postpublish": "npm run build",
+    "preversion": "npm run build",
+    "postversion": "npm run build"
+  },
+  "repository": "https://github.com/JTF4/wattbox.git",
+  "author": "David Stevens <teamjtf4@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/node": "^17.0.23",
+    "ts-node-dev": "^1.1.8"
+  },
+  "dependencies": {
+    "@types/xml2js": "^0.4.9",
+    "axios": "^0.26.1",
+    "typescript": "^4.6.3",
+    "xml2js": "^0.4.23"
+  }
+}
