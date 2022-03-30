@@ -1,7 +1,7 @@
 # wattbox
 ![npm](https://img.shields.io/npm/v/wattbox?style=flat-square)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/JTF4/wattbox/Style%20Check?label=Style%20Check&logo=github&style=flat-square)
-[![License](https://img.shields.io/github/license/JTF4/wattbox?style=flat-square)](https://github.com/JTF4/wattbox/blob/master/LICENSE.md)
+![GitHub](https://img.shields.io/github/license/jtf4/wattbox?style=flat-square)
 
 Promise based node implementation of the WattBox control API
 
