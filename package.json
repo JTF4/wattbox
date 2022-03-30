@@ -1,6 +1,6 @@
 {
   "name": "wattbox",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node Module Written in TypeScript to control the WattBox family of devices",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
