@@ -1,4 +1,5 @@
 # wattbox
+[![Style Check](https://github.com/JTF4/wattbox/actions/workflows/lint.yaml/badge.svg)](https://github.com/JTF4/wattbox/actions/workflows/lint.yaml)
 
 Promise based node implementation of the WattBox control API
 
