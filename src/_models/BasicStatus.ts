@@ -1,4 +1,4 @@
 export interface BasicStatus {
-        outlet_status: Number[],
-        auto_reboot: Array<Number>
+        outlet_status: number[],
+        auto_reboot: Array<number>
 }

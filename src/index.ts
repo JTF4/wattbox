@@ -26,7 +26,7 @@ export class WattBoxPromise extends EventEmitter {
     authToken: string;
     networkPath: string;
     private parser: xml2js.Parser = new xml2js.Parser();
-    private statusInterval: ReturnType<typeof setInterval>;;
+    private statusInterval: ReturnType<typeof setInterval>;
 
 
     /**
@@ -41,7 +41,12 @@ export class WattBoxPromise extends EventEmitter {
         this.authToken = this.getAuthToken(username, password);
 
         if (!networkPath.startsWith('http://') && !networkPath.startsWith('https://')) {
-            networkPath = 'http://' + networkPath.substring(0, networkPath.lastIndexOf('/'));
+            if (networkPath.endsWith('/')) {
+                networkPath = 'http://' + networkPath.substring(0, networkPath.lastIndexOf('/'));
+            } else {
+                networkPath = 'http://' + networkPath;
+            }
+            
             this.networkPath = networkPath;
         } else {
             this.networkPath = networkPath.substring(0, networkPath.lastIndexOf('/'));
@@ -57,11 +62,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public powerOn(outlet: number) {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(outlet, 1);
-            this.rest_get(url).then((response: any) => {
+            const url = self.buildCommandUrl(outlet, 1);
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -78,11 +83,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public powerOff(outlet: number) {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(outlet, 0);
-            this.rest_get(url).then((response: any) => {
+            const url = self.buildCommandUrl(outlet, 0);
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -99,11 +104,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public powerReset(outlet: number) {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(outlet, 3);
-            this.rest_get(url).then((response: any) => {
+            const url = self.buildCommandUrl(outlet, 3);
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -121,12 +126,20 @@ export class WattBoxPromise extends EventEmitter {
 
     public powerResetTimeout(outlet: number, timeout: number) {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(outlet, 3);
-            this.rest_get(url).then((response: any) => {
-                resolve(response);
+            const url = self.buildCommandUrl(outlet, 0);
+            this.rest_get(url).then(() => {
+                setTimeout(() => {
+                    const url = self.buildCommandUrl(outlet, 1);
+                    this.rest_get(url).then((response: BasicStatus) => {
+                        resolve(response);
+                    }).catch((error) => {
+                        reject(error);
+                    });
+
+                }, timeout);
             }).catch((error) => {
                 reject(error);
             });
@@ -141,11 +154,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public autoRebootOn() {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(0, 4);
-            this.rest_get(url).then((response: any) => {
+            const url = self.buildCommandUrl(0, 4);
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -161,11 +174,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public autoRebootOff() {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
-            let url = self.buildCommandUrl(0, 5);
-            this.rest_get(url).then((response: any) => {
+            const url = self.buildCommandUrl(0, 5);
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -181,7 +194,7 @@ export class WattBoxPromise extends EventEmitter {
 
     public getStatus() {
 
-        var self = this;
+        const self = this;
 
         /*
         * Wattbox documentation says that issuing the command 
@@ -193,8 +206,8 @@ export class WattBoxPromise extends EventEmitter {
         */
 
         return new Promise((resolve, reject) => {
-            let url = self.networkPath + '/control.cgi?outlet=-1&command="wattbox_info.xml"';
-            this.rest_get(url).then((response: any) => {
+            const url = self.networkPath + '/control.cgi?outlet=-1&command="wattbox_info.xml"';
+            this.rest_get(url).then((response: BasicStatus) => {
                 resolve(response);
             }).catch((error) => {
                 reject(error);
@@ -210,7 +223,7 @@ export class WattBoxPromise extends EventEmitter {
 
     public subscribeStatus(time: number) {
 
-        var self = this;
+        const self = this;
 
         this.statusInterval = setInterval(() => {
             self.getStatus().then((response: BasicStatus) => {
@@ -239,11 +252,11 @@ export class WattBoxPromise extends EventEmitter {
 
     public getInfo() {
         
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
 
-            let url = self.networkPath + '/wattbox_info.xml';
+            const url = self.networkPath + '/wattbox_info.xml';
 
             axios.get(url, {
                 headers: {
@@ -255,10 +268,10 @@ export class WattBoxPromise extends EventEmitter {
                     'Host': this.networkPath.split('//')[1].split('/')[0]
                 }
             }).then((response) => {
-                let data = response.data;
+                const data = response.data;
                 try {
-                    self.parser.parseStringPromise(data).then((result: any) => {
-                        let data: WattBoxInfo = result.request;
+                    self.parser.parseStringPromise(data).then((result) => {
+                        const data: WattBoxInfo = result.request;
                         resolve(data);
                     }).catch(error => {
                         reject(error);        
@@ -297,7 +310,7 @@ export class WattBoxPromise extends EventEmitter {
 
     private rest_get(url: string) {
 
-        var self = this;
+        const self = this;
 
         return new Promise((resolve, reject) => {
             axios.get(url, {
@@ -310,10 +323,10 @@ export class WattBoxPromise extends EventEmitter {
                     'Host': this.networkPath.split('//')[1].split('/')[0]
                 }
             }).then((response) => {
-                let data = response.data;
+                const data = response.data;
                 try {
-                    self.parser.parseStringPromise(data).then((result: any) => {
-                        let data: BasicStatus = result.request;
+                    self.parser.parseStringPromise(data).then((result) => {
+                        const data: BasicStatus = result.request;
                         resolve(data);
                     }).catch(error => {
                         reject(error);        
@@ -341,7 +354,7 @@ export class WattBoxPromise extends EventEmitter {
      */
 
     private getAuthToken(username: string, password: string) {
-        var auth: string = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
+        const auth: string = 'Basic ' + Buffer.from(username + ':' + password).toString('base64');
         return auth;
     }
 }

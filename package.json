@@ -11,10 +11,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "prepublish": "npm run build",
-    "postpublish": "npm run build",
-    "preversion": "npm run build",
-    "postversion": "npm run build"
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "prepublish": "npm run build"
   },
   "repository": "https://github.com/JTF4/wattbox.git",
   "author": "David Stevens <teamjtf4@gmail.com>",
@@ -22,6 +21,9 @@
   "private": false,
   "devDependencies": {
     "@types/node": "^17.0.23",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint": "^8.12.0",
     "ts-node-dev": "^1.1.8"
   },
   "dependencies": {
